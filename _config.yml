@@ -8,6 +8,7 @@ url: "https://alfdav.github.io"
 
 header_pages:
   - index.md
+  - posts.md
   - about.md
 
 footer: 'follow me on <a href="https://twitter.com/">twitter</a>'
