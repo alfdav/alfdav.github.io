@@ -1,4 +1,8 @@
-# Example Site settings
+# Site settings
+
+title: 'alfdavsec'
+description: "alfdav ramblings site."
+url: "https://alfdav.github.io"
 
 #google_analytics: UA-NNNNNNNN-N
 
