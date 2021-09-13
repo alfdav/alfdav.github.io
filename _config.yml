@@ -13,3 +13,6 @@ footer: 'follow me on <a href="https://twitter.com/">twitter</a>'
 
 plugins:
   - jekyll-seo-tag
+  
+remote_theme: b2a3e8/jekyll-theme-console
+
