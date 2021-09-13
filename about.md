@@ -1,7 +1,7 @@
 ---
-title: about
-layout: about
-permalink: /about
+title: page
+layout: /about
+permalink: /about/
 ---
 
 # work in about
