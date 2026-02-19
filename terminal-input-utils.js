@@ -7,6 +7,11 @@
 
   root.terminalInputUtils = api;
 })(typeof globalThis !== 'undefined' ? globalThis : window, () => {
+  const commandAliases = {
+    ls: 'help',
+    dir: 'help',
+  };
+
   function parseCommand(input = '') {
     const trimmed = input.trim();
     if (!trimmed) {
@@ -87,8 +92,18 @@
     };
   }
 
+  function resolveCommandAlias(command = '') {
+    const normalized = command.trim().toLowerCase();
+    if (!normalized) {
+      return '';
+    }
+
+    return commandAliases[normalized] || normalized;
+  }
+
   return {
     parseCommand,
+    resolveCommandAlias,
     addCommandToHistory,
     getPrintableCharacter,
     moveHistoryUp,

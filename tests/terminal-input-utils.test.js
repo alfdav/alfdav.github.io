@@ -3,6 +3,7 @@ const assert = require('node:assert/strict');
 
 const {
   parseCommand,
+  resolveCommandAlias,
   addCommandToHistory,
   getPrintableCharacter,
   moveHistoryUp,
@@ -15,6 +16,13 @@ test('parseCommand normalizes command name to lowercase and preserves args', () 
     args: 'now please',
   });
   assert.deepEqual(parseCommand('   '), { cmd: '', args: '' });
+});
+
+test('resolveCommandAlias maps ls and dir to help', () => {
+  assert.equal(resolveCommandAlias('ls'), 'help');
+  assert.equal(resolveCommandAlias('dir'), 'help');
+  assert.equal(resolveCommandAlias('help'), 'help');
+  assert.equal(resolveCommandAlias('projects'), 'projects');
 });
 
 test('addCommandToHistory skips empty commands and duplicate consecutive commands', () => {

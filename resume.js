@@ -165,7 +165,8 @@ window.resumeData =
       "title": "OSWE",
       "awarder": "Offensive Security",
       "date": "Nov 2023",
-      "summary": "Offensive Security Web Expert - Advanced proficiency in web application security, business logic flaw identification, and hands-on exploitation"
+      "summary": "Offensive Security Web Expert - Advanced proficiency in web application security, business logic flaw identification, and hands-on exploitation",
+      "verify_url": "https://credentials.offsec.com/1dc99c28-b380-49e8-8a46-29eebd9f5324#acc.fjigS8Es"
     },
     {
       "awarder": "eLearnSecurity",

@@ -322,19 +322,20 @@ document.addEventListener('DOMContentLoaded', () => {
         if (domEvent.key === 'Enter') {
             term.writeln('');
             const { cmd, args } = terminalInputUtils.parseCommand(commandBuffer);
+            const resolvedCmd = terminalInputUtils.resolveCommandAlias(cmd);
             commandHistory = terminalInputUtils.addCommandToHistory(commandHistory, commandBuffer);
             historyIndex = commandHistory.length;
             tempBuffer = '';
             
-            if (cmd.length > 0) {
-                const handler = commands[cmd];
+            if (resolvedCmd.length > 0) {
+                const handler = commands[resolvedCmd];
 
                 if (handler) {
                     if (handler.pattern) {
                         if (commandBuffer.trim().toLowerCase() === handler.pattern.toLowerCase()) {
                             handler.callback();
                         } else {
-                            term.writeln(`\x1B[1;31mCommand not found: ${cmd}\x1B[0m`);
+                            term.writeln(`\x1B[1;31mCommand not found: ${resolvedCmd}\x1B[0m`);
                             term.writeln('Type "help" to see available commands.');
                         }
                     } else {
