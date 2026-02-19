@@ -9,6 +9,7 @@ const {
   getCompanyName,
   getAboutSummary,
   listCertifications,
+  getVerifyCommandSuggestions,
   findCertification,
 } = require('../resume-utils.js');
 
@@ -126,6 +127,18 @@ test('listCertifications supports awards array schema from JSON resume', () => {
   assert.equal(certifications[0].title, 'OSWE');
   assert.equal(certifications[0].issuer, 'Offensive Security');
   assert.equal(certifications[0].summary, 'Advanced web application testing');
+});
+
+test('getVerifyCommandSuggestions builds unique sanitized verify commands', () => {
+  const suggestions = getVerifyCommandSuggestions([
+    { title: 'OSWE' },
+    { title: '  • `OSCP`  ' },
+    { title: 'oswe' },
+    { title: '' },
+    {},
+  ]);
+
+  assert.deepEqual(suggestions, ['verify OSWE', 'verify OSCP']);
 });
 
 test('findCertification matches case-insensitive partial title', () => {

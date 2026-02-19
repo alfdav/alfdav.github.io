@@ -115,6 +115,26 @@
     return [];
   }
 
+  function getVerifyCommandSuggestions(certifications = [], limit = 6) {
+    const seen = new Set();
+
+    return safeArray(certifications)
+      .map((cert) => sanitizeDisplayText(cert?.title))
+      .filter((title) => {
+        if (!title) {
+          return false;
+        }
+        const key = title.toLowerCase();
+        if (seen.has(key)) {
+          return false;
+        }
+        seen.add(key);
+        return true;
+      })
+      .slice(0, Math.max(0, limit))
+      .map((title) => `verify ${title}`);
+  }
+
   function findCertification(certifications, query = '') {
     const needle = query.trim().toLowerCase();
 
@@ -139,6 +159,7 @@
     getCompanyName,
     getAboutSummary,
     listCertifications,
+    getVerifyCommandSuggestions,
     findCertification,
   };
 });

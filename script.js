@@ -22,6 +22,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const educationEntries = resumeUtils.getDisplayEducationEntries(resumeData);
     const projectEntries = resumeUtils.safeArray(resumeData.projects);
     const certifications = resumeUtils.listCertifications(resumeData);
+    const verifySuggestions = resumeUtils.getVerifyCommandSuggestions(certifications);
+    const verifyExample = verifySuggestions[0] || 'verify OSCP';
 
     // Initialize command history
     let commandHistory = [];
@@ -85,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 term.writeln('education     - Educational background');
                 term.writeln('projects      - View my projects');
                 term.writeln('certs         - View professional certifications');
-                term.writeln('verify <name> - Verify a certification');
+                term.writeln(`verify <name> - Verify a certification (e.g., ${verifyExample})`);
                 term.writeln('contact       - Contact information');
                 term.writeln('clear         - Clear the terminal');
                 term.writeln('');
@@ -259,7 +261,15 @@ document.addEventListener('DOMContentLoaded', () => {
             callback: (args) => {
                 const certName = args?.trim().toLowerCase() || '';
                 if (!certName) {
-                    term.writeln('Please specify a certification name.');
+                    term.writeln('\x1B[33mUsage:\x1B[0m verify <name>');
+                    if (verifySuggestions.length > 0) {
+                        term.writeln('\x1B[33mExamples:\x1B[0m');
+                        verifySuggestions.forEach((command) => {
+                            term.writeln(`  ${command}`);
+                        });
+                    }
+                    term.writeln('Run "certs" to list available certifications.');
+                    term.writeln('');
                     return;
                 }
 
