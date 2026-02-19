@@ -218,7 +218,8 @@ document.addEventListener('DOMContentLoaded', () => {
                             term.writeln(`  \x1B[90mIssued: ${cert.date}\x1B[0m`);
                         }
                         if (cert.verify_url) {
-                            term.writeln(`  \x1B[90mVerify at: ${cert.verify_url}\x1B[0m`);
+                            const verifyLink = terminalInputUtils.toTerminalHyperlink(cert.verify_url, cert.verify_url);
+                            term.writeln(`  \x1B[90mVerify at:\x1B[0m ${verifyLink}`);
                         }
                     });
                     term.writeln('ℹ️  Use "verify <name>" for detailed information about a specific certification');
@@ -250,7 +251,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         term.writeln(`\x1B[36mSummary:\x1B[0m ${cert.summary}`);
                     }
                     if (cert.verify_url) {
-                        term.writeln(`\x1B[36mVerification URL:\x1B[0m ${cert.verify_url}`);
+                        const verifyLink = terminalInputUtils.toTerminalHyperlink(cert.verify_url, cert.verify_url);
+                        term.writeln(`\x1B[36mVerification URL:\x1B[0m ${verifyLink}`);
                     }
                     if (cert.accredible_id) {
                         term.writeln(`\x1B[36mCredential ID:\x1B[0m ${cert.accredible_id}`);

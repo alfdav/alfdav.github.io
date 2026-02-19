@@ -101,9 +101,22 @@
     return commandAliases[normalized] || normalized;
   }
 
+  function toTerminalHyperlink(url = '', label = '') {
+    const normalizedUrl = typeof url === 'string' ? url.trim() : '';
+    if (!normalizedUrl) {
+      return '';
+    }
+
+    const normalizedLabel =
+      typeof label === 'string' && label.trim() ? label.trim() : normalizedUrl;
+
+    return `\x1b]8;;${normalizedUrl}\x07${normalizedLabel}\x1b]8;;\x07`;
+  }
+
   return {
     parseCommand,
     resolveCommandAlias,
+    toTerminalHyperlink,
     addCommandToHistory,
     getPrintableCharacter,
     moveHistoryUp,

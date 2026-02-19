@@ -4,6 +4,7 @@ const assert = require('node:assert/strict');
 const {
   parseCommand,
   resolveCommandAlias,
+  toTerminalHyperlink,
   addCommandToHistory,
   getPrintableCharacter,
   moveHistoryUp,
@@ -23,6 +24,13 @@ test('resolveCommandAlias maps ls and dir to help', () => {
   assert.equal(resolveCommandAlias('dir'), 'help');
   assert.equal(resolveCommandAlias('help'), 'help');
   assert.equal(resolveCommandAlias('projects'), 'projects');
+});
+
+test('toTerminalHyperlink wraps url and label with OSC-8 sequence', () => {
+  const url = 'https://credentials.offsec.com/example';
+  const link = toTerminalHyperlink(url, 'Verify');
+  assert.equal(link, '\x1b]8;;https://credentials.offsec.com/example\x07Verify\x1b]8;;\x07');
+  assert.equal(toTerminalHyperlink(''), '');
 });
 
 test('addCommandToHistory skips empty commands and duplicate consecutive commands', () => {
