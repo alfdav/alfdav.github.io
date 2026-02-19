@@ -10,6 +10,7 @@
   const commandAliases = {
     ls: 'help',
     dir: 'help',
+    certs: 'certifications',
   };
 
   function parseCommand(input = '') {

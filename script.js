@@ -78,18 +78,13 @@ document.addEventListener('DOMContentLoaded', () => {
             callback: () => {
                 term.writeln('Available commands:');
                 term.writeln('');
-                const skillNames = skills.map((skill) => clean(skill?.name)).filter(Boolean);
-                const primaryInstitution =
-                    educationEntries.find((edu) => typeof edu?.institution === 'string' && edu.institution.trim())?.institution?.trim() ||
-                    'Not specified';
-
                 term.writeln('help          - Show this help message');
                 term.writeln('about         - About me');
-                term.writeln(`skills        - My technical skills: ${skillNames.join(', ') || 'Not specified'}`);
+                term.writeln('skills        - My technical skills');
                 term.writeln('experience    - Work experience');
-                term.writeln(`education     - Educational background: ${primaryInstitution}`);
+                term.writeln('education     - Educational background');
                 term.writeln('projects      - View my projects');
-                term.writeln('certifications - View professional certifications');
+                term.writeln('certs         - View professional certifications');
                 term.writeln('verify <name> - Verify a certification');
                 term.writeln('contact       - Contact information');
                 term.writeln('clear         - Clear the terminal');

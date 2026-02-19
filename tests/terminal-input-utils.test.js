@@ -22,6 +22,7 @@ test('parseCommand normalizes command name to lowercase and preserves args', () 
 test('resolveCommandAlias maps ls and dir to help', () => {
   assert.equal(resolveCommandAlias('ls'), 'help');
   assert.equal(resolveCommandAlias('dir'), 'help');
+  assert.equal(resolveCommandAlias('certs'), 'certifications');
   assert.equal(resolveCommandAlias('help'), 'help');
   assert.equal(resolveCommandAlias('projects'), 'projects');
 });
