@@ -3,3 +3,19 @@
 .sass-cache
 _site
 Gemfile.lock
+mem_docs/
+.history/
+.windsurfrules
+.old/
+
+# Security and configuration files
+security.config.js
+.env
+config/*.js
+!config/example.config.js
+
+# Security
+*.env
+*.key
+*.pem
+/config/

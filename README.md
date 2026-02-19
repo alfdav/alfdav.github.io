@@ -1,121 +1,132 @@
-# jekyll-theme-console
+# Terminal Portfolio Website
 
-A jekyll theme with inspiration from linux consoles for hackers, developers and script kiddies.
+## Project Overview
+A personal resume website that simulates a command-line terminal interface, providing an interactive and unique way to display professional information.
 
-<img src="https://raw.githubusercontent.com/b2a3e8/jekyll-theme-console/master/screenrec-dark.gif" width="550" title="Screenshot">
+## Features
 
-## Demo
+### Terminal Emulation
+- Realistic terminal appearance with blinking cursor and command prompt
+- Command history navigation using arrow keys (↑/↓)
+- Tab completion for commands
+- Error handling for invalid commands
 
-[dark style](https://b2a3e8.github.io/jekyll-theme-console-demo-dark/) ([source code](https://github.com/b2a3e8/jekyll-theme-console-demo-dark)):
+### Available Commands
+- `help`: List all available commands
+- `about`: Display personal bio
+- `skills`: List technical skills
+- `experience`: Show work experience
+- `education`: Display educational background
+- `projects`: Browse projects
+- `certifications`: View professional certifications
+- `contact`: Get contact information
+- `clear`: Clear the terminal
 
-[<img src="https://raw.githubusercontent.com/b2a3e8/jekyll-theme-console/master/screenshot-dark.png" width="350" title="Screenshot">](https://b2a3e8.github.io/jekyll-theme-console-demo-dark/)
+### Interactive Features
+1. **Command History**
+   - Up arrow (↑) to navigate to previous commands
+   - Down arrow (↓) to navigate to newer commands
+   - Preserves current input when starting history navigation
+   - Returns to current input when reaching the end of history
 
+2. **Tab Completion**
+   - Press Tab to auto-complete commands
+   - Shows all possible completions for partial matches
+   - Case-insensitive completion
+   - Completes common prefixes automatically
 
-[light style](https://b2a3e8.github.io/jekyll-theme-console-demo-light/) ([source code](https://github.com/b2a3e8/jekyll-theme-console-demo-light)):
+3. **Error Handling**
+   - Clear error messages for invalid commands
+   - Helpful suggestions for similar commands
+   - "help" command reminder on errors
 
-[<img src="https://raw.githubusercontent.com/b2a3e8/jekyll-theme-console/master/screenshot-light.png" width="350" title="Screenshot">](https://b2a3e8.github.io/jekyll-theme-console-demo-light/)
+## Technical Implementation
 
-
-[hacker style](https://b2a3e8.github.io/jekyll-theme-console-demo-hacker/) ([source code](https://github.com/b2a3e8/jekyll-theme-console-demo-hacker)):
-
-[<img src="https://raw.githubusercontent.com/b2a3e8/jekyll-theme-console/master/screenshot-hacker.png" width="350" title="Screenshot">](https://b2a3e8.github.io/jekyll-theme-console-demo-hacker/)
-
-
-## Installation
-
-First, follow the steps in [this Quickstart Guide](https://jekyllrb.com/docs/) if you're starting with Jekyll from scratch. Skip this if you already have an existing jekyll project.
-
-**_You can also use the [demo site's source code](https://b2a3e8.github.io/jekyll-theme-console-demo-dark/) as template for an easy start._**
-
-### Remote theme method for GitHub Pages
-
-Use this method for sites hosted with GitHub Pages only. To install:
-
-1. Set `remote_theme` in your project's Jekyll `_config.yml` file:
-
-   ```yaml
-   remote_theme: b2a3e8/jekyll-theme-console
-   ```
-
-### Gem-based method
-
-With Gem-based themes, directories such as the `assets`, `_layouts`, `_includes`, and `_sass` are stored in the theme’s gem, hidden from your immediate view. Yet all of the necessary directories will be read and processed during Jekyll’s build process.
-
-This allows for easier installation and updating as you don't have to manage any of the theme files. To install:
-
-1. Add this line to your Jekyll site's `Gemfile`:
-
-   ```ruby
-   gem "jekyll-theme-console"
-   ```
-
-2. Fetch and update bundled gems by running the following [Bundler](http://bundler.io/) command:
-
-   ```bash
-   bundle
-   ```
-
-3. Set `theme` in your project's Jekyll `_config.yml` file:
-
-   ```yaml
-   theme: jekyll-theme-console
-   ```
-
-To update the theme run `bundle update`.
-
-## Usage
-
-### _config.yaml
-
-In addition to jekyll's default configuration options, you can provide:
-- `header_pages` to specify which pages should be displayed in navbar
-- `footer` string, which will be inserted on the end of the page (doesn't support markup, but html)
-- `google_analytics` tracking id (tracking will be enabled only in production environments and only if you set this option, no Google Analytics code will be loaded if you don't set this option)
-- `listen_for_clients_preferred_style` boolean, used to allow users to choose light or dark style based on their preferences (mostly affected by OS dark or light theme, details see https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-color-scheme)
-- `style` to specify which predefined style (colors) should be used
-
-```yaml
-header_pages:
-  - index.md
-  - about.md
-
-style: dark # dark (default), light or hacker
-listen_for_clients_preferred_style: true # false (default) or true
-
-footer: 'follow us on <a href="https://twitter.com/xxx">twitter</a>'
-
-google_analytics: UA-NNNNNNNN-N
+### File Structure
+```
+alfdav.github.io/
+├── index.html      # Main HTML file
+├── styles.css      # Terminal styling
+├── script.js       # Terminal logic
+└── resume.js       # Resume data
 ```
 
-### front matter variables
+### Technologies Used
+- HTML5 for structure
+- CSS3 for styling
+- JavaScript for interactivity
+- xterm.js for terminal emulation
 
-Besides the predefined [front matter](https://jekyllrb.com/docs/front-matter/) variables from jekyll this theme also supports following variables:
-- `title` to set a title for the page
-- `lang` to specify the language, defaults to 'en'
-- `robots` to control the robot meta tag ([details](http://longqian.me/2017/02/12/jekyll-robots-configuration/)) - this may be useful for example to set `NOINDEX` to tag pages
+### Design Decisions
+- Dark theme with green text (classic terminal look)
+- Centered terminal with subtle glow effect
+- Responsive design for all devices
+- Accessibility considerations
 
-## Customization
+## Development Guidelines
 
-If you want to customize this theme, follow this steps:
-1. Fork this repository (you can use the fork as your own theme or directly as your website)
-2. Create or modify files in `_layouts` directory for html-based changes
-3. Create or modify files in `_sass` and `assets` for css-based changes
-   - You can change things which are used in light and dark theme (like font-size) in `_sass/base.scss`. You'll find style variables at the top.
-   - Style-specific definitions are in `_sass/_dark.scss` respectively in `_sass/_light.scss`. You can change things like background-color there.
+### Code Style
+- Keep functions small and focused
+- Use clear, descriptive variable names
+- Comment complex logic
+- Follow SOLID principles
+
+### Best Practices
+- Frontend-only implementation
+- No sensitive data exposure
+- Performance optimization
+- Mobile-first responsive design
+
+### Security
+- Static content only
+- No backend dependencies
+- No data persistence
+- Safe command execution
+
+## Deployment
+- Hosted on GitHub Pages
+- No build process required
+- Simple static file serving
+
+## Future Enhancements
+1. Command history persistence
+2. Custom command aliases
+3. Easter eggs and hidden commands
+4. More interactive features
+5. Additional resume sections
+6. Performance optimizations
+7. Enhanced accessibility
+8. Mobile responsiveness improvements
+9. Accredible Integration
+   - Link certifications to official Accredible credentials
+   - Display certification badges and verification status
+   - Add `verify` command to check certification authenticity
+   - Implement real-time credential validation
+   - Show detailed certification information and achievements
+
+## Usage Instructions
+1. Visit the website
+2. Type 'help' to see available commands
+3. Use Tab for command completion
+4. Use ↑/↓ arrows for command history
+5. Type 'clear' to reset the terminal
+
+## Development Setup
+1. Clone the repository
+2. No build tools required
+3. Serve with any static file server
+4. Edit files directly
 
 ## Contributing
-
-Bug reports and pull requests are welcome on GitHub at https://github.com/b2a3e8/jekyll-theme-console. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
-
-## Development
-
-To set up your environment to develop this theme, run `bundle install`.
-
-Your theme is setup just like a normal Jekyll site! To test your theme, run `bundle exec jekyll serve` and open your browser at `http://localhost:4000`. This starts a Jekyll server using your theme. Add pages, documents, data, etc. like normal to test your theme's contents. As you make modifications to your theme and to your content, your site will regenerate and you should see the changes in the browser after a refresh, just like normal.
-
-When your theme is released, only the files in `_layouts`, `_includes`, `_sass` and `assets` tracked with Git will be bundled.
-To add a custom directory to your theme-gem, please edit the regexp in `jekyll-theme-console.gemspec` accordingly.
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Submit a pull request
 
 ## License
+MIT License - Feel free to use and modify
 
-The theme is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+## Contact
+- LinkedIn: [David Diaz](https://www.linkedin.com/in/0xdaviddiaz/) (Preferred)
+- GitHub: [alfdav](https://github.com/alfdav)
+- Email: david@toledoranch.com
