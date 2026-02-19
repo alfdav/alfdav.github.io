@@ -3,6 +3,9 @@ const assert = require('node:assert/strict');
 
 const {
   safeArray,
+  sanitizeDisplayText,
+  getDisplayEducationEntries,
+  isHttpUrl,
   getCompanyName,
   getAboutSummary,
   listCertifications,
@@ -15,6 +18,34 @@ test('safeArray returns array input or fallback empty array', () => {
   assert.deepEqual(safeArray(null), []);
   assert.deepEqual(safeArray('not-an-array'), []);
   assert.deepEqual(safeArray({ length: 2 }), []);
+});
+
+test('sanitizeDisplayText removes markdown/backtick clutter and bullet prefixes', () => {
+  assert.equal(
+    sanitizeDisplayText("  • Python: `python -c 'import pty; pty.spawn(\"/bin/bash\")'`  "),
+    "Python: python -c 'import pty; pty.spawn(\"/bin/bash\")'"
+  );
+  assert.equal(sanitizeDisplayText('\n\t  Hello   world \r\n'), 'Hello world');
+});
+
+test('getDisplayEducationEntries filters known tty easter-egg artifacts', () => {
+  const resumeData = {
+    education: [
+      { institution: 'Universidad Tecnologica de Mexico', studyType: 'Bachelors', area: 'Business' },
+      { institution: "Let's open a TTY", area: "python -c 'import pty; pty.spawn(\"/bin/bash\")'" },
+    ],
+  };
+
+  const entries = getDisplayEducationEntries(resumeData);
+  assert.equal(entries.length, 1);
+  assert.equal(entries[0].institution, 'Universidad Tecnologica de Mexico');
+});
+
+test('isHttpUrl returns true only for valid http/https urls', () => {
+  assert.equal(isHttpUrl('https://credentials.offsec.com/example'), true);
+  assert.equal(isHttpUrl('http://example.com'), true);
+  assert.equal(isHttpUrl('Disney GitLab'), false);
+  assert.equal(isHttpUrl('ftp://example.com'), false);
 });
 
 test('getCompanyName prefers company and falls back safely', () => {

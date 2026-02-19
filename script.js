@@ -16,9 +16,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const resumeData = window.resumeData;
     const resumeUtils = window.resumeUtils;
     const terminalInputUtils = window.terminalInputUtils;
+    const clean = resumeUtils.sanitizeDisplayText;
     const skills = resumeUtils.safeArray(resumeData.skills);
     const workEntries = resumeUtils.safeArray(resumeData.work);
-    const educationEntries = resumeUtils.safeArray(resumeData.education);
+    const educationEntries = resumeUtils.getDisplayEducationEntries(resumeData);
     const projectEntries = resumeUtils.safeArray(resumeData.projects);
     const certifications = resumeUtils.listCertifications(resumeData);
 
@@ -77,14 +78,16 @@ document.addEventListener('DOMContentLoaded', () => {
             callback: () => {
                 term.writeln('Available commands:');
                 term.writeln('');
-                const skillNames = skills.map((skill) => skill?.name).filter(Boolean);
-                const institutionNames = educationEntries.map((edu) => edu?.institution).filter(Boolean);
+                const skillNames = skills.map((skill) => clean(skill?.name)).filter(Boolean);
+                const primaryInstitution =
+                    educationEntries.find((edu) => typeof edu?.institution === 'string' && edu.institution.trim())?.institution?.trim() ||
+                    'Not specified';
 
                 term.writeln('help          - Show this help message');
                 term.writeln('about         - About me');
                 term.writeln(`skills        - My technical skills: ${skillNames.join(', ') || 'Not specified'}`);
                 term.writeln('experience    - Work experience');
-                term.writeln(`education     - Educational background: ${institutionNames.join(', ') || 'Not specified'}`);
+                term.writeln(`education     - Educational background: ${primaryInstitution}`);
                 term.writeln('projects      - View my projects');
                 term.writeln('certifications - View professional certifications');
                 term.writeln('verify <name> - Verify a certification');
@@ -99,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 term.writeln('\x1B[1;32m\nABOUT\x1B[0m');
                 term.writeln('\x1B[90m───────────────\x1B[0m');
                 
-                const summary = resumeUtils.getAboutSummary(resumeData);
+                const summary = clean(resumeUtils.getAboutSummary(resumeData));
                 term.writeln(`\x1B[36m${summary}\x1B[0m\n`);
             },
             description: 'Show about information'
@@ -115,8 +118,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 skills.forEach(skill => {
-                    const keywords = resumeUtils.safeArray(skill?.keywords);
-                    term.writeln(`\n\x1B[1;33m・ ${skill.name}\x1B[0m`);
+                    const keywords = resumeUtils.safeArray(skill?.keywords)
+                        .map(clean)
+                        .filter(Boolean);
+                    const skillName = clean(skill?.name) || 'Skill Area';
+                    term.writeln(`\n\x1B[1;33m・ ${skillName}\x1B[0m`);
                     term.writeln(`  \x1B[35m${keywords.join(', ') || 'No keywords listed'}\x1B[0m`);
                 });
                 term.writeln('');
@@ -134,10 +140,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 workEntries.forEach(job => {
-                    const position = job.position || 'Unspecified position';
-                    const company = resumeUtils.getCompanyName(job);
-                    const dates = `${job.startDate || ''} - ${job.endDate || 'Present'}`;
-                    const highlights = resumeUtils.safeArray(job.highlights);
+                    const position = clean(job.position) || 'Unspecified position';
+                    const company = clean(resumeUtils.getCompanyName(job));
+                    const startDate = clean(job.startDate);
+                    const endDate = clean(job.endDate) || 'Present';
+                    const dates = `${startDate || ''} - ${endDate}`;
+                    const highlights = resumeUtils.safeArray(job.highlights)
+                        .map(clean)
+                        .filter(Boolean);
 
                     term.writeln(`\n\x1B[1;33m・ ${position}\x1B[0m`);
                     term.writeln(`  \x1B[36m${company}\x1B[0m`);
@@ -166,10 +176,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 educationEntries.forEach(edu => {
-                    const courses = resumeUtils.safeArray(edu.courses);
-                    term.writeln(`\n\x1B[1;33m・ ${edu.studyType} in ${edu.area}\x1B[0m`);
-                    term.writeln(`  \x1B[36m${edu.institution}\x1B[0m`);
-                    term.writeln(`  \x1B[90m${edu.startDate} - ${edu.endDate}\x1B[0m`);
+                    const courses = resumeUtils.safeArray(edu.courses).map(clean).filter(Boolean);
+                    const studyType = clean(edu.studyType) || 'Education';
+                    const area = clean(edu.area);
+                    const institution = clean(edu.institution) || 'Unspecified institution';
+                    const startDate = clean(edu.startDate);
+                    const endDate = clean(edu.endDate);
+
+                    term.writeln(`\n\x1B[1;33m・ ${studyType}${area ? ` in ${area}` : ''}\x1B[0m`);
+                    term.writeln(`  \x1B[36m${institution}\x1B[0m`);
+                    term.writeln(`  \x1B[90m${startDate}${startDate || endDate ? ' - ' : ''}${endDate}\x1B[0m`);
                     if (courses.length > 0) {
                         term.writeln(`  \x1B[35mCourses: ${courses.join(', ')}\x1B[0m`);
                     }
@@ -189,16 +205,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 projectEntries.forEach(project => {
-                    const keywords = resumeUtils.safeArray(project.keywords);
-                    term.writeln(`\n\x1B[1;33m・ ${project.name}\x1B[0m`);
-                    term.writeln(`  \x1B[36mDescription:\x1B[0m ${project.description}`);
+                    const keywords = resumeUtils.safeArray(project.keywords).map(clean).filter(Boolean);
+                    const projectName = clean(project.name) || 'Untitled project';
+                    const projectDescription = clean(project.description) || 'No description available';
+                    const projectUrl = clean(project.url);
+
+                    term.writeln(`\n\x1B[1;33m・ ${projectName}\x1B[0m`);
+                    term.writeln(`  \x1B[36mDescription:\x1B[0m ${projectDescription}`);
 
                     if (keywords.length > 0) {
                         term.writeln(`  \x1B[35mTechnologies:\x1B[0m \x1B[35m${keywords.join(', ')}\x1B[0m`);
                     }
 
-                    if (project.url) {
-                        term.writeln(`  \x1B[36mURL:\x1B[0m \x1B[4;34m${project.url}\x1B[0m`);
+                    if (projectUrl) {
+                        if (resumeUtils.isHttpUrl(projectUrl)) {
+                            const link = terminalInputUtils.toTerminalHyperlink(projectUrl, projectUrl);
+                            term.writeln(`  \x1B[36mURL:\x1B[0m ${link}`);
+                        } else {
+                            term.writeln(`  \x1B[36mReference:\x1B[0m ${projectUrl}`);
+                        }
                     }
                 });
                 term.writeln('');
@@ -212,13 +237,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (certifications.length > 0) {
                     certifications.forEach((cert) => {
-                        term.writeln(`\n\x1B[1;33m・ ${cert.title}\x1B[0m`);
-                        term.writeln(`  \x1B[36m${cert.issuer}\x1B[0m`);
-                        if (cert.date) {
-                            term.writeln(`  \x1B[90mIssued: ${cert.date}\x1B[0m`);
+                        const title = clean(cert.title) || 'Untitled certification';
+                        const issuer = clean(cert.issuer) || 'Unspecified issuer';
+                        const date = clean(cert.date);
+                        const verifyUrl = clean(cert.verify_url);
+
+                        term.writeln(`\n\x1B[1;33m・ ${title}\x1B[0m`);
+                        term.writeln(`  \x1B[36m${issuer}\x1B[0m`);
+                        if (date) {
+                            term.writeln(`  \x1B[90mIssued: ${date}\x1B[0m`);
                         }
-                        if (cert.verify_url) {
-                            const verifyLink = terminalInputUtils.toTerminalHyperlink(cert.verify_url, cert.verify_url);
+                        if (verifyUrl && resumeUtils.isHttpUrl(verifyUrl)) {
+                            const verifyLink = terminalInputUtils.toTerminalHyperlink(verifyUrl, verifyUrl);
                             term.writeln(`  \x1B[90mVerify at:\x1B[0m ${verifyLink}`);
                         }
                     });
@@ -240,22 +270,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const cert = resumeUtils.findCertification(certifications, certName);
                 if (cert) {
+                    const title = clean(cert.title) || 'Untitled certification';
+                    const issuer = clean(cert.issuer) || 'Unspecified issuer';
+                    const date = clean(cert.date);
+                    const summary = clean(cert.summary);
+                    const verifyUrl = clean(cert.verify_url);
+                    const credentialId = clean(cert.accredible_id);
+
                     term.writeln(`\x1B[1;32m\nCERTIFICATION DETAILS\x1B[0m`);
                     term.writeln('\x1B[90m───────────────────────────────\x1B[0m');
-                    term.writeln(`\x1B[36mTitle:\x1B[0m ${cert.title}`);
-                    term.writeln(`\x1B[36mIssuer:\x1B[0m ${cert.issuer}`);
-                    if (cert.date) {
-                        term.writeln(`\x1B[36mIssued:\x1B[0m ${cert.date}`);
+                    term.writeln(`\x1B[36mTitle:\x1B[0m ${title}`);
+                    term.writeln(`\x1B[36mIssuer:\x1B[0m ${issuer}`);
+                    if (date) {
+                        term.writeln(`\x1B[36mIssued:\x1B[0m ${date}`);
                     }
-                    if (cert.summary) {
-                        term.writeln(`\x1B[36mSummary:\x1B[0m ${cert.summary}`);
+                    if (summary) {
+                        term.writeln(`\x1B[36mSummary:\x1B[0m ${summary}`);
                     }
-                    if (cert.verify_url) {
-                        const verifyLink = terminalInputUtils.toTerminalHyperlink(cert.verify_url, cert.verify_url);
+                    if (verifyUrl && resumeUtils.isHttpUrl(verifyUrl)) {
+                        const verifyLink = terminalInputUtils.toTerminalHyperlink(verifyUrl, verifyUrl);
                         term.writeln(`\x1B[36mVerification URL:\x1B[0m ${verifyLink}`);
                     }
-                    if (cert.accredible_id) {
-                        term.writeln(`\x1B[36mCredential ID:\x1B[0m ${cert.accredible_id}`);
+                    if (credentialId) {
+                        term.writeln(`\x1B[36mCredential ID:\x1B[0m ${credentialId}`);
                     }
                     term.writeln('');
                 } else {
