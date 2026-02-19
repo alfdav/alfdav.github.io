@@ -2,11 +2,20 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 
 const {
+  safeArray,
   getCompanyName,
   getAboutSummary,
   listCertifications,
   findCertification,
 } = require('../resume-utils.js');
+
+test('safeArray returns array input or fallback empty array', () => {
+  assert.deepEqual(safeArray(['a', 'b']), ['a', 'b']);
+  assert.deepEqual(safeArray(undefined), []);
+  assert.deepEqual(safeArray(null), []);
+  assert.deepEqual(safeArray('not-an-array'), []);
+  assert.deepEqual(safeArray({ length: 2 }), []);
+});
 
 test('getCompanyName prefers company and falls back safely', () => {
   assert.equal(getCompanyName({ company: 'State Farm' }), 'State Farm');
@@ -67,6 +76,25 @@ test('listCertifications supports legacy certificates object schema', () => {
   assert.equal(certifications[0].issuer, 'Offensive Security');
   assert.equal(certifications[0].verify_url, 'https://example.test/oscp');
   assert.equal(certifications[0].accredible_id, 'ABC123');
+});
+
+test('listCertifications supports awards array schema from JSON resume', () => {
+  const resumeData = {
+    awards: [
+      {
+        title: 'OSWE',
+        awarder: 'Offensive Security',
+        date: 'Nov 2023',
+        summary: 'Advanced web application testing',
+      },
+    ],
+  };
+
+  const certifications = listCertifications(resumeData);
+  assert.equal(certifications.length, 1);
+  assert.equal(certifications[0].title, 'OSWE');
+  assert.equal(certifications[0].issuer, 'Offensive Security');
+  assert.equal(certifications[0].summary, 'Advanced web application testing');
 });
 
 test('findCertification matches case-insensitive partial title', () => {

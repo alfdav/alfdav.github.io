@@ -7,6 +7,10 @@
 
   root.resumeUtils = api;
 })(typeof globalThis !== 'undefined' ? globalThis : window, () => {
+  function safeArray(value) {
+    return Array.isArray(value) ? value : [];
+  }
+
   function getCompanyName(job = {}) {
     return job.company || job.name || 'Unspecified company';
   }
@@ -41,6 +45,10 @@
       return resumeData.certifications.map(normalizeCertification);
     }
 
+    if (Array.isArray(resumeData.awards)) {
+      return resumeData.awards.map(normalizeCertification);
+    }
+
     if (resumeData.certificates && typeof resumeData.certificates === 'object') {
       return Object.values(resumeData.certificates).map(normalizeCertification);
     }
@@ -65,6 +73,7 @@
   }
 
   return {
+    safeArray,
     getCompanyName,
     getAboutSummary,
     listCertifications,

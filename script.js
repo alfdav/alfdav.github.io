@@ -16,6 +16,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const resumeData = window.resumeData;
     const resumeUtils = window.resumeUtils;
     const terminalInputUtils = window.terminalInputUtils;
+    const skills = resumeUtils.safeArray(resumeData.skills);
+    const workEntries = resumeUtils.safeArray(resumeData.work);
+    const educationEntries = resumeUtils.safeArray(resumeData.education);
+    const projectEntries = resumeUtils.safeArray(resumeData.projects);
     const certifications = resumeUtils.listCertifications(resumeData);
 
     // Initialize command history
@@ -73,11 +77,14 @@ document.addEventListener('DOMContentLoaded', () => {
             callback: () => {
                 term.writeln('Available commands:');
                 term.writeln('');
+                const skillNames = skills.map((skill) => skill?.name).filter(Boolean);
+                const institutionNames = educationEntries.map((edu) => edu?.institution).filter(Boolean);
+
                 term.writeln('help          - Show this help message');
                 term.writeln('about         - About me');
-                term.writeln(`skills        - My technical skills: ${resumeData.skills.map(skill => skill.name).join(', ')}`);
+                term.writeln(`skills        - My technical skills: ${skillNames.join(', ') || 'Not specified'}`);
                 term.writeln('experience    - Work experience');
-                term.writeln(`education     - Educational background: ${resumeData.education.map(edu => edu.institution).join(', ')}`);
+                term.writeln(`education     - Educational background: ${institutionNames.join(', ') || 'Not specified'}`);
                 term.writeln('projects      - View my projects');
                 term.writeln('certifications - View professional certifications');
                 term.writeln('verify <name> - Verify a certification');
@@ -102,9 +109,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 term.writeln('\x1B[1;32m\nSKILLS\x1B[0m');
                 term.writeln('\x1B[90m───────────────\x1B[0m');
 
-                resumeData.skills.forEach(skill => {
+                if (skills.length === 0) {
+                    term.writeln('\x1B[90mNo skills entries available\x1B[0m\n');
+                    return;
+                }
+
+                skills.forEach(skill => {
+                    const keywords = resumeUtils.safeArray(skill?.keywords);
                     term.writeln(`\n\x1B[1;33m・ ${skill.name}\x1B[0m`);
-                    term.writeln(`  \x1B[35m${skill.keywords.join(', ')}\x1B[0m`);
+                    term.writeln(`  \x1B[35m${keywords.join(', ') || 'No keywords listed'}\x1B[0m`);
                 });
                 term.writeln('');
             },
@@ -115,16 +128,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 term.writeln('\x1B[1;32m\nEXPERIENCE\x1B[0m');
                 term.writeln('\x1B[90m─────────────────\x1B[0m');
                 
-                if (!resumeData.work?.length) {
+                if (workEntries.length === 0) {
                     term.writeln('\x1B[90mNo experience entries available\x1B[0m\n');
                     return;
                 }
 
-                resumeData.work.forEach(job => {
+                workEntries.forEach(job => {
                     const position = job.position || 'Unspecified position';
                     const company = resumeUtils.getCompanyName(job);
                     const dates = `${job.startDate || ''} - ${job.endDate || 'Present'}`;
-                    const highlights = job.highlights || [];
+                    const highlights = resumeUtils.safeArray(job.highlights);
 
                     term.writeln(`\n\x1B[1;33m・ ${position}\x1B[0m`);
                     term.writeln(`  \x1B[36m${company}\x1B[0m`);
@@ -147,12 +160,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 term.writeln('\x1B[1;32m\nEDUCATION\x1B[0m');
                 term.writeln('\x1B[90m───────────────\x1B[0m');
 
-                resumeData.education.forEach(edu => {
+                if (educationEntries.length === 0) {
+                    term.writeln('\x1B[90mNo education entries available\x1B[0m\n');
+                    return;
+                }
+
+                educationEntries.forEach(edu => {
+                    const courses = resumeUtils.safeArray(edu.courses);
                     term.writeln(`\n\x1B[1;33m・ ${edu.studyType} in ${edu.area}\x1B[0m`);
                     term.writeln(`  \x1B[36m${edu.institution}\x1B[0m`);
                     term.writeln(`  \x1B[90m${edu.startDate} - ${edu.endDate}\x1B[0m`);
-                    if(edu.courses?.length) {
-                        term.writeln(`  \x1B[35mCourses: ${edu.courses.join(', ')}\x1B[0m`);
+                    if (courses.length > 0) {
+                        term.writeln(`  \x1B[35mCourses: ${courses.join(', ')}\x1B[0m`);
                     }
                 });
                 term.writeln('');
@@ -164,12 +183,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 term.writeln('\x1B[1;32m\nPROJECTS\x1B[0m');
                 term.writeln('\x1B[90m───────────────\x1B[0m');
 
-                resumeData.projects.forEach(project => {
+                if (projectEntries.length === 0) {
+                    term.writeln('\x1B[90mNo project entries available\x1B[0m\n');
+                    return;
+                }
+
+                projectEntries.forEach(project => {
+                    const keywords = resumeUtils.safeArray(project.keywords);
                     term.writeln(`\n\x1B[1;33m・ ${project.name}\x1B[0m`);
                     term.writeln(`  \x1B[36mDescription:\x1B[0m ${project.description}`);
 
-                    if (project.keywords?.length) {
-                        term.writeln(`  \x1B[35mTechnologies:\x1B[0m \x1B[35m${project.keywords.join(', ')}\x1B[0m`);
+                    if (keywords.length > 0) {
+                        term.writeln(`  \x1B[35mTechnologies:\x1B[0m \x1B[35m${keywords.join(', ')}\x1B[0m`);
                     }
 
                     if (project.url) {
