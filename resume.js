@@ -10,8 +10,6 @@ window.resumeData =
   },
   "basics": {
     "name": "David Diaz",
-    "email": "david@toledoranch.com",
-    "phone": "657-229-3156",
     "location": {
       "address": "The Colony, TX"
     },
@@ -128,7 +126,7 @@ window.resumeData =
     {
       "name": "HackTheBox Dallas Meetup Ambassador",
       "description": "Founded and lead the Dallas HTB community, organizing hands-on offensive security training and CTF events, fostering local security talent development",
-      "url": "http://meetu.ps/c/4wy4d/KHYFY/a",
+      "url": "https://meetu.ps/c/4wy4d/KHYFY/a",
       "keywords": [
         "Community Leadership",
         "Security Training",

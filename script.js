@@ -1,4 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Prevent clickjacking - break out of iframes
+    if (window.top !== window.self) {
+        window.top.location = window.self.location;
+    }
+
     if (!window.resumeData) {
         console.error('Error: resumeData is not defined on window. Ensure resume.js is loaded correctly.');
         return;
@@ -328,6 +333,27 @@ document.addEventListener('DOMContentLoaded', () => {
     // Handle key input
     let konamiCode = [];
     const konamiSequence = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+
+    // Sanitize pasted content - strip control characters that could inject ANSI escape sequences
+    term.attachCustomKeyEventHandler((domEvent) => {
+        if ((domEvent.ctrlKey || domEvent.metaKey) && domEvent.key === 'v' && domEvent.type === 'keydown') {
+            domEvent.preventDefault();
+            navigator.clipboard.readText().then((text) => {
+                // Strip C0 controls (except newline/tab), DEL, and C1 controls
+                const sanitized = text.replace(/[\u0000-\u0008\u000b-\u001f\u007f-\u009f]/g, '');
+                // Only take printable characters, ignore newlines for single-line command buffer
+                const singleLine = sanitized.replace(/[\r\n]+/g, ' ').trim();
+                if (singleLine) {
+                    commandBuffer += singleLine;
+                    term.write(singleLine);
+                }
+            }).catch(() => {
+                // Clipboard access denied - silently fail
+            });
+            return false;
+        }
+        return true;
+    });
 
     term.onKey(({ key, domEvent }) => {
         // Konami code detection

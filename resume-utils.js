@@ -14,7 +14,7 @@
   function sanitizeDisplayText(value) {
     const text = value == null ? '' : String(value);
     return text
-      .replace(/[\u0000-\u001f\u007f]+/g, ' ')
+      .replace(/[\u0000-\u001f\u007f-\u009f]+/g, ' ')
       .replace(/`([^`]*)`/g, '$1')
       .replace(/^[\s•*-]+/, '')
       .replace(/\s+/g, ' ')
