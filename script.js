@@ -135,7 +135,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     const keywords = resumeUtils.safeArray(skill?.keywords)
                         .map(clean)
                         .filter(Boolean);
-                    const skillName = clean(skill?.name) || 'Skill Area';
+                    let skillName = clean(skill?.name) || '';
+                    if (!skillName && keywords.length > 0) {
+                        const match = keywords[0].match(/^([^:]+):\s*(.*)/);
+                        if (match) {
+                            skillName = match[1];
+                            keywords[0] = match[2];
+                        }
+                    }
+                    skillName = skillName || 'Skill Area';
                     term.writeln(`\n\x1B[1;33m・ ${skillName}\x1B[0m`);
                     term.writeln(`  \x1B[35m${keywords.join(', ') || 'No keywords listed'}\x1B[0m`);
                 });
@@ -318,7 +326,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                     term.writeln('');
                 } else {
-                    term.writeln(`\x1B[1;31mNo certification found matching "${certName}"\x1B[0m`);
+                    term.writeln(`\x1B[1;31mNo certification found matching "${clean(certName)}"\x1B[0m`);
                 }
                 term.writeln('');
             },
@@ -418,14 +426,14 @@ document.addEventListener('DOMContentLoaded', () => {
                         if (commandBuffer.trim().toLowerCase() === handler.pattern.toLowerCase()) {
                             handler.callback();
                         } else {
-                            term.writeln(`\x1B[1;31mCommand not found: ${resolvedCmd}\x1B[0m`);
+                            term.writeln(`\x1B[1;31mCommand not found: ${clean(resolvedCmd)}\x1B[0m`);
                             term.writeln('Type "help" to see available commands.');
                         }
                     } else {
                         handler.callback(args);
                     }
                 } else {
-                    term.writeln(`\x1B[1;31mCommand not found: ${cmd}\x1B[0m`);
+                    term.writeln(`\x1B[1;31mCommand not found: ${clean(cmd)}\x1B[0m`);
                     term.writeln('Type "help" to see available commands.');
                 }
             }

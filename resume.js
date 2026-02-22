@@ -10,9 +10,7 @@ window.resumeData =
   },
   "basics": {
     "name": "David Diaz",
-    "location": {
-      "address": "The Colony, TX"
-    },
+    "location": {},
     "website": "https://github.com/alfdav"
   },
   "education": [
@@ -126,7 +124,7 @@ window.resumeData =
     {
       "name": "HackTheBox Dallas Meetup Ambassador",
       "description": "Founded and lead the Dallas HTB community, organizing hands-on offensive security training and CTF events, fostering local security talent development",
-      "url": "https://meetu.ps/c/4wy4d/KHYFY/a",
+      "url": "",
       "keywords": [
         "Community Leadership",
         "Security Training",

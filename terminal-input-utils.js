@@ -108,10 +108,12 @@
       return '';
     }
 
+    const safeUrl = normalizedUrl.replace(/[\x00-\x1f\x7f-\x9f]/g, '');
     const normalizedLabel =
-      typeof label === 'string' && label.trim() ? label.trim() : normalizedUrl;
+      typeof label === 'string' && label.trim() ? label.trim() : safeUrl;
+    const safeLabel = normalizedLabel.replace(/[\x00-\x1f\x7f-\x9f]/g, '');
 
-    return `\x1b]8;;${normalizedUrl}\x07${normalizedLabel}\x1b]8;;\x07`;
+    return `\x1b]8;;${safeUrl}\x07${safeLabel}\x1b]8;;\x07`;
   }
 
   return {
