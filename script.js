@@ -352,8 +352,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if ((domEvent.ctrlKey || domEvent.metaKey) && domEvent.key === 'v' && domEvent.type === 'keydown') {
             domEvent.preventDefault();
             navigator.clipboard.readText().then((text) => {
-                // Strip C0 controls (except newline/tab), DEL, and C1 controls
-                const sanitized = text.replace(/[\u0000-\u0008\u000b-\u001f\u007f-\u009f]/g, '');
+                // Strip C0 controls (except newline), DEL, and C1 controls
+                const sanitized = text.replace(/[\u0000-\u0009\u000b-\u001f\u007f-\u009f]/g, '');
                 // Only take printable characters, ignore newlines for single-line command buffer
                 const singleLine = sanitized.replace(/[\r\n]+/g, ' ').trim();
                 if (singleLine) {
