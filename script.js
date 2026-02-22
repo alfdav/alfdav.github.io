@@ -1,7 +1,18 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Prevent clickjacking - break out of iframes
     if (window.top !== window.self) {
-        window.top.location = window.self.location;
+        try {
+            window.top.location = window.self.location;
+        } catch (e) {
+            // sandbox attribute blocked navigation - destroy page content
+            document.body.innerHTML = '';
+            document.body.style.background = '#000';
+            document.body.style.color = '#fff';
+            document.body.style.fontFamily = 'monospace';
+            document.body.style.padding = '2em';
+            document.body.textContent = 'This page cannot be displayed in a frame. Visit directly: https://alfdav.github.io/';
+            return;
+        }
     }
 
     if (!window.resumeData) {
@@ -73,10 +84,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Welcome message
     term.writeln('Welcome to David\'s Terminal Portfolio');
     term.writeln('Type "help" to see available commands.');
+    term.writeln('  \x1B[90mThis is a simulated terminal. No real commands are executed.\x1B[0m');
     term.writeln('');
 
     // Command prompt
-    const prompt = '$ ';
+    const prompt = 'visitor@portfolio:~$ ';
     let commandBuffer = '';
 
     // Available commands
@@ -325,6 +337,7 @@ document.addEventListener('DOMContentLoaded', () => {
         clear: {
             callback: () => {
                 term.clear();
+                term.writeln('\x1B[90m[David\'s Terminal Portfolio - type "help" for commands]\x1B[0m');
             },
             description: 'Clear the terminal'
         }
@@ -361,7 +374,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (konamiCode.length > konamiSequence.length) konamiCode.shift();
         
         if (konamiCode.join(',') === konamiSequence.join(',')) {
-            term.writeln('\n\x1B[35m🎉 Secret unlocked! Activating developer mode...\x1B[0m\n');
+            term.writeln('\n\x1B[35m🎉 Nice! You found the easter egg. Achievement unlocked: true gamer.\x1B[0m\n');
             konamiCode = [];
         }
         
