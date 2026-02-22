@@ -10,6 +10,7 @@ const {
   getAboutSummary,
   listCertifications,
   getVerifyCommandSuggestions,
+  getClosestCertificationSuggestions,
   findCertification,
 } = require('../resume-utils.js');
 
@@ -139,6 +140,29 @@ test('getVerifyCommandSuggestions builds unique sanitized verify commands', () =
   ]);
 
   assert.deepEqual(suggestions, ['verify OSWE', 'verify OSCP']);
+});
+
+test('getVerifyCommandSuggestions caps examples to top 3 by default', () => {
+  const suggestions = getVerifyCommandSuggestions([
+    { title: 'OSWE' },
+    { title: 'eWPT' },
+    { title: 'OSCP' },
+    { title: 'Splunk-CCU' },
+  ]);
+
+  assert.deepEqual(suggestions, ['verify OSWE', 'verify eWPT', 'verify OSCP']);
+});
+
+test('getClosestCertificationSuggestions returns relevant matches or fallback list', () => {
+  const certifications = [
+    { title: 'OSWE' },
+    { title: 'eWPT' },
+    { title: 'OSCP' },
+    { title: 'Splunk-CCU' },
+  ];
+
+  assert.deepEqual(getClosestCertificationSuggestions(certifications, 'os', 3), ['OSWE', 'OSCP']);
+  assert.deepEqual(getClosestCertificationSuggestions(certifications, 'nope', 3), ['OSWE', 'eWPT', 'OSCP']);
 });
 
 test('findCertification matches case-insensitive partial title', () => {

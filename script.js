@@ -270,7 +270,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             term.writeln(`  \x1B[90mIssued: ${date}\x1B[0m`);
                         }
                         if (verifyUrl && resumeUtils.isHttpUrl(verifyUrl)) {
-                            const verifyLink = terminalInputUtils.toTerminalHyperlink(verifyUrl, verifyUrl);
+                            const verifyLink = terminalInputUtils.toTerminalHyperlink(verifyUrl, 'Open verification link');
                             term.writeln(`  \x1B[90mVerify at:\x1B[0m ${verifyLink}`);
                         }
                     });
@@ -292,6 +292,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         verifySuggestions.forEach((command) => {
                             term.writeln(`  ${command}`);
                         });
+                        if (certifications.length > verifySuggestions.length) {
+                            term.writeln('  ...and more via "certs"');
+                        }
                     }
                     term.writeln('Run "certs" to list available certifications.');
                     term.writeln('');
@@ -318,7 +321,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         term.writeln(`\x1B[36mSummary:\x1B[0m ${summary}`);
                     }
                     if (verifyUrl && resumeUtils.isHttpUrl(verifyUrl)) {
-                        const verifyLink = terminalInputUtils.toTerminalHyperlink(verifyUrl, verifyUrl);
+                        const verifyLink = terminalInputUtils.toTerminalHyperlink(verifyUrl, 'Open credential page');
                         term.writeln(`\x1B[36mVerification URL:\x1B[0m ${verifyLink}`);
                     }
                     if (credentialId) {
@@ -327,6 +330,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     term.writeln('');
                 } else {
                     term.writeln(`\x1B[1;31mNo certification found matching "${clean(certName)}"\x1B[0m`);
+                    const nearby = resumeUtils.getClosestCertificationSuggestions(certifications, certName, 3);
+                    if (nearby.length > 0) {
+                        term.writeln('\x1B[33mTry:\x1B[0m');
+                        nearby.forEach((title) => {
+                            term.writeln(`  verify ${title}`);
+                        });
+                    }
+                    term.writeln('Run "certs" to list available certifications.');
                 }
                 term.writeln('');
             },

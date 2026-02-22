@@ -115,7 +115,7 @@
     return [];
   }
 
-  function getVerifyCommandSuggestions(certifications = [], limit = 6) {
+  function getVerifyCommandSuggestions(certifications = [], limit = 3) {
     const seen = new Set();
 
     return safeArray(certifications)
@@ -133,6 +133,43 @@
       })
       .slice(0, Math.max(0, limit))
       .map((title) => `verify ${title}`);
+  }
+
+  function getClosestCertificationSuggestions(certifications = [], query = '', limit = 3) {
+    const uniqueTitles = [];
+    const seen = new Set();
+
+    safeArray(certifications).forEach((cert) => {
+      const title = sanitizeDisplayText(cert?.title);
+      if (!title) {
+        return;
+      }
+      const key = title.toLowerCase();
+      if (seen.has(key)) {
+        return;
+      }
+      seen.add(key);
+      uniqueTitles.push(title);
+    });
+
+    if (uniqueTitles.length === 0) {
+      return [];
+    }
+
+    const normalizedQuery = sanitizeDisplayText(query).toLowerCase();
+    if (!normalizedQuery) {
+      return uniqueTitles.slice(0, Math.max(0, limit));
+    }
+
+    const matches = uniqueTitles.filter((title) =>
+      title.toLowerCase().includes(normalizedQuery)
+    );
+
+    if (matches.length > 0) {
+      return matches.slice(0, Math.max(0, limit));
+    }
+
+    return uniqueTitles.slice(0, Math.max(0, limit));
   }
 
   function findCertification(certifications, query = '') {
@@ -160,6 +197,7 @@
     getAboutSummary,
     listCertifications,
     getVerifyCommandSuggestions,
+    getClosestCertificationSuggestions,
     findCertification,
   };
 });
