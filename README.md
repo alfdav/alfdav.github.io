@@ -129,4 +129,4 @@ MIT License - Feel free to use and modify
 ## Contact
 - LinkedIn: [David Diaz](https://www.linkedin.com/in/0xdaviddiaz/) (Preferred)
 - GitHub: [alfdav](https://github.com/alfdav)
-- Email: david@toledoranch.com
+- Email: 23536173+alfdav@users.noreply.github.com
