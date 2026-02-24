@@ -1,4 +1,19 @@
 document.addEventListener('DOMContentLoaded', () => {
+    function showFatalError(message) {
+        var el = document.getElementById('loading-msg');
+        if (el) {
+            el.textContent = message;
+            el.style.color = '#ff6b6b';
+        } else {
+            var p = document.createElement('p');
+            p.textContent = message;
+            p.style.color = '#ff6b6b';
+            p.style.fontFamily = 'monospace';
+            p.style.padding = '2em';
+            document.body.appendChild(p);
+        }
+    }
+
     // Prevent clickjacking - break out of iframes
     if (window.top !== window.self) {
         try {
@@ -16,15 +31,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (!window.resumeData) {
-        console.error('Error: resumeData is not defined on window. Ensure resume.js is loaded correctly.');
+        showFatalError('Failed to load resume data. Please refresh or try again later.');
         return;
     }
     if (!window.resumeUtils) {
-        console.error('Error: resumeUtils is not defined on window. Ensure resume-utils.js is loaded correctly.');
+        showFatalError('Failed to load resume utilities. Please refresh or try again later.');
         return;
     }
     if (!window.terminalInputUtils) {
-        console.error('Error: terminalInputUtils is not defined on window. Ensure terminal-input-utils.js is loaded correctly.');
+        showFatalError('Failed to load terminal utilities. Please refresh or try again later.');
         return;
     }
 
@@ -47,29 +62,39 @@ document.addEventListener('DOMContentLoaded', () => {
     let tempBuffer = '';
     
     // Initialize terminal with dynamic sizing
-    const term = new Terminal({
-        cursorBlink: true,
-        fontSize: 14,
-        fontFamily: 'Menlo, Monaco, "Courier New", monospace',
-        theme: {
-            background: '#000000',
-            foreground: '#ffffff',
-            cursor: '#ffffff'
-        },
-        allowTransparency: true,
-        scrollback: 1000,
-        convertEol: true
-    });
+    let term, fitAddon;
+    try {
+        term = new Terminal({
+            cursorBlink: true,
+            fontSize: 14,
+            fontFamily: 'Menlo, Monaco, "Courier New", monospace',
+            theme: {
+                background: '#000000',
+                foreground: '#ffffff',
+                cursor: '#ffffff'
+            },
+            allowTransparency: true,
+            scrollback: 1000,
+            convertEol: true
+        });
 
-    // Initialize FitAddon
-    const fitAddon = new FitAddon.FitAddon();
-    term.loadAddon(fitAddon);
+        // Initialize FitAddon
+        fitAddon = new FitAddon.FitAddon();
+        term.loadAddon(fitAddon);
 
-    // Open terminal
-    term.open(document.getElementById('terminal'));
-    
-    // Initial fit
-    fitAddon.fit();
+        // Open terminal
+        term.open(document.getElementById('terminal'));
+
+        // Initial fit
+        fitAddon.fit();
+    } catch (err) {
+        showFatalError('Terminal failed to initialize. Please refresh or try a different browser.');
+        return;
+    }
+
+    // Remove loading message now that terminal is ready
+    var loadingMsg = document.getElementById('loading-msg');
+    if (loadingMsg) { loadingMsg.remove(); }
     
     // Handle window resize
     window.addEventListener('resize', () => {

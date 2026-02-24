@@ -54,6 +54,14 @@ body {
     background: #444;
 }
 
+#loading-msg,
+noscript p {
+    color: #ffffff;
+    font-family: 'Menlo', Monaco, 'Courier New', monospace;
+    font-size: 14px;
+    padding: 1em;
+}
+
 /* Responsive design */
 @media (max-width: 768px) {
     #terminal {
