@@ -256,8 +256,8 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         contact() {
             header('CONTACT INFORMATION', '──────────────────────');
-            put('・ LinkedIn: https://linkedin.com/in/alfdav', 'yellow');
-            put('・ GitHub:   https://github.com/alfdav', 'yellow');
+            putLink('・ LinkedIn: ', 'https://linkedin.com/in/alfdav', 'https://linkedin.com/in/alfdav');
+            putLink('・ GitHub:   ', 'https://github.com/alfdav', 'https://github.com/alfdav');
             put('');
             put('Note: For recruiter inquiries, please find my', 'italic-gray');
             put('email address on my LinkedIn profile', 'italic-gray');
