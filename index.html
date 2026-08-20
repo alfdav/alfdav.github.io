@@ -2,22 +2,24 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://unpkg.com/@xterm/xterm@6.0.0/lib/xterm.js https://unpkg.com/@xterm/addon-fit@0.11.0/lib/addon-fit.js; style-src 'self' 'unsafe-inline' https://unpkg.com/@xterm/xterm@6.0.0/css/xterm.css; img-src 'self'; font-src 'self'; connect-src 'none'; base-uri 'self'; form-action 'none'">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'none'; base-uri 'self'; form-action 'none'">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>David Diaz - Terminal Portfolio</title>
     <link rel="icon" href="data:," />
-    <link rel="stylesheet" href="https://unpkg.com/@xterm/xterm@6.0.0/css/xterm.css" integrity="sha384-n2n7twoohnW+d3myBKaUgl7DSiwidw6MkQy9oesGzkPpMjejKRR3XlnD+5yCdtBD" crossorigin="anonymous" />
     <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
     <noscript>
-        <p style="color:#ffffff;font-family:monospace;padding:2em;">JavaScript is required to run this terminal portfolio. Please enable JavaScript and reload.</p>
+        <p>JavaScript is required to run this terminal portfolio. Please enable JavaScript and reload.</p>
     </noscript>
     <div id="terminal">
-        <p id="loading-msg" style="color:#ffffff;font-family:'Menlo',Monaco,'Courier New',monospace;font-size:14px;padding:1em;">Loading terminal...</p>
+        <p id="loading-msg">Loading terminal...</p>
+        <div id="output" hidden></div>
+        <div id="prompt-row" hidden>
+            <span id="prompt">visitor@portfolio:~$ </span>
+            <input id="cmd" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" />
+        </div>
     </div>
-    <script src="https://unpkg.com/@xterm/xterm@6.0.0/lib/xterm.js" integrity="sha384-f/1U6Z9wM4D71a5eRXEZnyOTMOvjqxr2XLwh+Go1OvIl3L3tOcvUrzudnhbECwl4" crossorigin="anonymous"></script>
-    <script src="https://unpkg.com/@xterm/addon-fit@0.11.0/lib/addon-fit.js" integrity="sha384-txoiwu4RR2GD3qySbaj+BbzibkLbSJRcfqGYMu6z1EqHil4A2dyBiBW5dlacG6OR" crossorigin="anonymous"></script>
     <script src="resume.js"></script>
     <script src="resume-utils.js"></script>
     <script src="terminal-input-utils.js"></script>
