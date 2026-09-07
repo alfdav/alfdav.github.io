@@ -8,63 +8,65 @@ html,
 body {
     width: 100%;
     height: 100%;
-}
-
-body {
-    background-color: #000000;
-    margin: 0;
-    padding: 0;
+    background: #000;
     overflow: hidden;
-    font-family: "Courier New", Courier, monospace;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    font-family: Menlo, Monaco, "Courier New", monospace;
 }
 
 #terminal {
     width: 100vw;
     height: 100vh;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-#terminal .terminal {
-    height: 100%;
-}
-
-.xterm-viewport {
-    overflow-y: auto !important;
-}
-
-/* Custom scrollbar styles */
-.xterm-viewport::-webkit-scrollbar {
-    width: 10px;
-}
-
-.xterm-viewport::-webkit-scrollbar-track {
-    background: #1a1a1a;
-}
-
-.xterm-viewport::-webkit-scrollbar-thumb {
-    background: #333;
-    border-radius: 5px;
-}
-
-.xterm-viewport::-webkit-scrollbar-thumb:hover {
-    background: #444;
+    padding: 1em;
+    overflow-y: auto;
+    color: #fff;
+    font-size: 14px;
+    line-height: 1.4;
 }
 
 #loading-msg,
 noscript p {
-    color: #ffffff;
-    font-family: 'Menlo', Monaco, 'Courier New', monospace;
+    color: #fff;
+    font-family: inherit;
     font-size: 14px;
     padding: 1em;
 }
 
-/* Responsive design */
+#prompt-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5ch;
+}
+
+#prompt {
+    white-space: pre;
+    flex-shrink: 0;
+}
+
+#cmd {
+    flex: 1;
+    min-width: 0;
+    background: transparent;
+    border: none;
+    color: #fff;
+    font: inherit;
+    outline: none;
+    caret-color: #fff;
+}
+
+#output a {
+    color: #5c5cff;
+}
+
+.green { color: #33ff33; font-weight: bold; }
+.cyan { color: #00d7d7; }
+.yellow { color: #d7d700; font-weight: bold; }
+.gray { color: #888; }
+.magenta { color: #d700d7; }
+.red, .error { color: #ff6b6b; font-weight: bold; }
+.italic-gray { color: #888; font-style: italic; }
+
 @media (max-width: 768px) {
     #terminal {
-        padding: 5px;
+        padding: 0.5em;
     }
 }

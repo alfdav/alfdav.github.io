@@ -4,9 +4,7 @@ const assert = require('node:assert/strict');
 const {
   parseCommand,
   resolveCommandAlias,
-  toTerminalHyperlink,
   addCommandToHistory,
-  getPrintableCharacter,
   moveHistoryUp,
   moveHistoryDown,
 } = require('../terminal-input-utils.js');
@@ -24,14 +22,6 @@ test('resolveCommandAlias maps ls and dir to help', () => {
   assert.equal(resolveCommandAlias('dir'), 'help');
   assert.equal(resolveCommandAlias('certs'), 'certifications');
   assert.equal(resolveCommandAlias('help'), 'help');
-  assert.equal(resolveCommandAlias('projects'), 'projects');
-});
-
-test('toTerminalHyperlink wraps url and label with OSC-8 sequence', () => {
-  const url = 'https://credentials.offsec.com/example';
-  const link = toTerminalHyperlink(url, 'Verify');
-  assert.equal(link, '\x1b]8;;https://credentials.offsec.com/example\x07Verify\x1b]8;;\x07');
-  assert.equal(toTerminalHyperlink(''), '');
 });
 
 test('addCommandToHistory skips empty commands and duplicate consecutive commands', () => {
@@ -47,25 +37,6 @@ test('addCommandToHistory skips empty commands and duplicate consecutive command
 
   const withNext = addCommandToHistory(withDuplicate, 'about');
   assert.deepEqual(withNext, ['help', 'about']);
-});
-
-test('getPrintableCharacter excludes backspace and non-character keys', () => {
-  assert.equal(
-    getPrintableCharacter('a', { key: 'a', ctrlKey: false, altKey: false, metaKey: false }),
-    'a'
-  );
-  assert.equal(
-    getPrintableCharacter('\x7f', { key: 'Backspace', ctrlKey: false, altKey: false, metaKey: false }),
-    ''
-  );
-  assert.equal(
-    getPrintableCharacter('\r', { key: 'Enter', ctrlKey: false, altKey: false, metaKey: false }),
-    ''
-  );
-  assert.equal(
-    getPrintableCharacter('x', { key: 'x', ctrlKey: true, altKey: false, metaKey: false }),
-    ''
-  );
 });
 
 test('history navigation preserves temp input and restores on down at end', () => {

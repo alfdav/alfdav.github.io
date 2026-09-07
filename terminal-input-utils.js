@@ -1,128 +1,70 @@
-(function initTerminalInputUtils(root, factory) {
-  const api = factory();
+const commandAliases = {
+  ls: 'help',
+  dir: 'help',
+  certs: 'certifications',
+};
 
-  if (typeof module === 'object' && module.exports) {
-    module.exports = api;
+function parseCommand(input = '') {
+  const trimmed = input.trim();
+  if (!trimmed) {
+    return { cmd: '', args: '' };
   }
+  const [rawCmd, ...args] = trimmed.split(/\s+/);
+  return { cmd: rawCmd.toLowerCase(), args: args.join(' ') };
+}
 
-  root.terminalInputUtils = api;
-})(typeof globalThis !== 'undefined' ? globalThis : window, () => {
-  const commandAliases = {
-    ls: 'help',
-    dir: 'help',
-    certs: 'certifications',
+function addCommandToHistory(history = [], input = '') {
+  const trimmed = input.trim();
+  if (!trimmed || history[history.length - 1] === trimmed) {
+    return history.slice();
+  }
+  return history.concat(trimmed);
+}
+
+function moveHistoryUp(state) {
+  const { history = [], historyIndex = 0, commandBuffer = '', tempBuffer = '' } = state || {};
+  if (!history.length || historyIndex <= 0) {
+    return { historyIndex, commandBuffer, tempBuffer };
+  }
+  return {
+    historyIndex: historyIndex - 1,
+    commandBuffer: history[historyIndex - 1] || '',
+    tempBuffer: historyIndex === history.length ? commandBuffer : tempBuffer,
   };
+}
 
-  function parseCommand(input = '') {
-    const trimmed = input.trim();
-    if (!trimmed) {
-      return { cmd: '', args: '' };
-    }
-
-    const [rawCmd, ...args] = trimmed.split(/\s+/);
-    return { cmd: rawCmd.toLowerCase(), args: args.join(' ') };
+function moveHistoryDown(state) {
+  const { history = [], historyIndex = 0, commandBuffer = '', tempBuffer = '' } = state || {};
+  if (!history.length) {
+    return { historyIndex, commandBuffer, tempBuffer };
   }
-
-  function addCommandToHistory(history = [], input = '') {
-    const trimmed = input.trim();
-    if (!trimmed) {
-      return history.slice();
-    }
-
-    if (history[history.length - 1] === trimmed) {
-      return history.slice();
-    }
-
-    return history.concat(trimmed);
-  }
-
-  function getPrintableCharacter(key, domEvent = {}) {
-    if (domEvent.altKey || domEvent.ctrlKey || domEvent.metaKey) {
-      return '';
-    }
-
-    if (domEvent.key === 'Backspace' || domEvent.key === 'Enter' || domEvent.key === 'Tab') {
-      return '';
-    }
-
-    if (typeof domEvent.key === 'string' && domEvent.key.length === 1) {
-      return key;
-    }
-
-    return '';
-  }
-
-  function moveHistoryUp(state) {
-    const { history = [], historyIndex = 0, commandBuffer = '', tempBuffer = '' } = state || {};
-
-    if (!history.length || historyIndex <= 0) {
-      return { historyIndex, commandBuffer, tempBuffer };
-    }
-
-    const nextTempBuffer = historyIndex === history.length ? commandBuffer : tempBuffer;
-    const nextHistoryIndex = historyIndex - 1;
-    const nextCommandBuffer = history[nextHistoryIndex] || '';
-
+  if (historyIndex < history.length - 1) {
     return {
-      historyIndex: nextHistoryIndex,
-      commandBuffer: nextCommandBuffer,
-      tempBuffer: nextTempBuffer,
-    };
-  }
-
-  function moveHistoryDown(state) {
-    const { history = [], historyIndex = 0, commandBuffer = '', tempBuffer = '' } = state || {};
-
-    if (!history.length) {
-      return { historyIndex, commandBuffer, tempBuffer };
-    }
-
-    if (historyIndex < history.length - 1) {
-      const nextHistoryIndex = historyIndex + 1;
-      return {
-        historyIndex: nextHistoryIndex,
-        commandBuffer: history[nextHistoryIndex] || '',
-        tempBuffer,
-      };
-    }
-
-    return {
-      historyIndex: history.length,
-      commandBuffer: tempBuffer,
+      historyIndex: historyIndex + 1,
+      commandBuffer: history[historyIndex + 1] || '',
       tempBuffer,
     };
   }
-
-  function resolveCommandAlias(command = '') {
-    const normalized = command.trim().toLowerCase();
-    if (!normalized) {
-      return '';
-    }
-
-    return commandAliases[normalized] || normalized;
-  }
-
-  function toTerminalHyperlink(url = '', label = '') {
-    const normalizedUrl = typeof url === 'string' ? url.trim() : '';
-    if (!normalizedUrl) {
-      return '';
-    }
-
-    const safeUrl = normalizedUrl.replace(/[\x00-\x1f\x7f-\x9f]/g, '');
-    const normalizedLabel =
-      typeof label === 'string' && label.trim() ? label.trim() : safeUrl;
-    const safeLabel = normalizedLabel.replace(/[\x00-\x1f\x7f-\x9f]/g, '');
-
-    return `\x1b]8;;${safeUrl}\x07${safeLabel}\x1b]8;;\x07`;
-  }
-
   return {
-    parseCommand,
-    resolveCommandAlias,
-    toTerminalHyperlink,
-    addCommandToHistory,
-    getPrintableCharacter,
-    moveHistoryUp,
-    moveHistoryDown,
+    historyIndex: history.length,
+    commandBuffer: tempBuffer,
+    tempBuffer,
   };
-});
+}
+
+function resolveCommandAlias(command = '') {
+  const normalized = command.trim().toLowerCase();
+  return normalized ? commandAliases[normalized] || normalized : '';
+}
+
+var terminalInputUtils = {
+  parseCommand,
+  resolveCommandAlias,
+  addCommandToHistory,
+  moveHistoryUp,
+  moveHistoryDown,
+};
+
+if (typeof module === 'object' && module.exports) {
+  module.exports = terminalInputUtils;
+}
